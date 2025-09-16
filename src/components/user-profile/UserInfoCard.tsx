@@ -7,7 +7,7 @@ import Input from "../form/input/InputField";
 import Label from "../form/Label";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store";
-import { getPosition, updateEmployee } from "@/lib/auth";
+import { createEmployee, getPosition, updateEmployee } from "@/lib/auth";
 import Select from "../form/Select";
 import { ChevronDownIcon } from "@/icons";
 import { setEmployee } from "@/store/employeeSlice";
@@ -30,6 +30,8 @@ export default function UserInfoCard() {
   const dispatch = useDispatch();
 
   const employee = useSelector((state: RootState) => state.employee);
+  const user = useSelector((state: RootState) => state.user);
+  
   const [formData, setFormData] = useState({
     name: employee.name ?? "",
     email: employee.email ?? "",
@@ -65,7 +67,20 @@ export default function UserInfoCard() {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const updated = await updateEmployee(employee.id ?? "", formData);
+      let updated;
+      if (employee.id) {
+        updated = await updateEmployee(employee.id ?? "", formData);
+      } else {
+        updated = await createEmployee(
+          formData.positionId,
+          "",
+          user.id ?? "",
+          formData.name,
+          user.email ?? "",
+          formData.phone
+        );
+      }
+      
       console.log("Updated employee:", updated);
       dispatch(setEmployee(employee));
       alert("Update berhasil!");
@@ -111,7 +126,7 @@ export default function UserInfoCard() {
                 Email address
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                {employee.email}
+                {user.email}
               </p>
             </div>
 
@@ -199,7 +214,7 @@ export default function UserInfoCard() {
                     <Label>Email Address</Label>
                     <Input 
                       type="text" 
-                      defaultValue={employee.email ?? ""} 
+                      defaultValue={user.email ?? ""} 
                       onChange={handleInputChange}
                       name="email"
                     />

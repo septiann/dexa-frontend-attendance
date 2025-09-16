@@ -1,11 +1,13 @@
 export interface LoginResponse {
+  user: User
   access_token: string;
 }
 
 export interface User {
-  id: number;
+  id: string;
   email: string;
-  name: string;
+  isActive: boolean;
+  userType: string;
 }
 
 export interface Employee {
@@ -28,4 +30,12 @@ export interface Position {
   name: string;
   codePosition: string;
   description: string;
+}
+
+export interface Attendance {
+  nik: string;
+  type: string,
+  attendanceDate: string,
+  id: string,
+  createdAt: string
 }

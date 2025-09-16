@@ -8,6 +8,7 @@ import { RootState } from "@/store";
 import { clearUser } from "@/store/userSlice";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import { clearEmployee } from "@/store/employeeSlice";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,6 +28,7 @@ export default function UserDropdown() {
   
   const handleLogout = () => {
     dispatch(clearUser());
+    dispatch(clearEmployee());
     Cookies.remove("token");
     router.push("/login");
   };

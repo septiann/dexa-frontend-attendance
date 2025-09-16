@@ -1,10 +1,10 @@
 import api from "./api";
-import { Employee, LoginResponse, Position, User } from "@/types/auth";
+import { Attendance, Employee, LoginResponse, Position, User } from "@/types/auth";
 
-export async function login(email: string, password: string): Promise<string> {
+export async function login(email: string, password: string): Promise<LoginResponse> {
   const res = await api.post<LoginResponse>("/auth/login", { email, password });
 
-  return res.data.access_token;
+  return res.data;
 }
 
 export async function register(
@@ -43,5 +43,39 @@ export async function updateEmployee(
 ): Promise<Employee> {
   const res = await api.put<Employee>(`/employees/${id}`, data);
   
+  return res.data;
+}
+
+export async function createEmployee(
+  positionId: string,
+  photoUrl: string,
+  authUserId: string,
+  name: string,
+  email: string,
+  phone: string
+): Promise<User> {
+  const res = await api.post<User>("/employees", {
+    positionId,
+    photoUrl,
+    authUserId,
+    name,
+    email,
+    phone
+  });
+
+  return res.data;
+}
+
+export async function submitAttendance(
+  data: Partial<Attendance>
+): Promise<Attendance> {
+  const res = await api.post<Attendance>(`/attendances`, data);
+
+  return res.data;
+}
+
+export async function getAttendances(nik: string): Promise<Attendance[]> {
+  const res = await api.get<Attendance[]>(`/attendances/nik/${nik}`);
+
   return res.data;
 }

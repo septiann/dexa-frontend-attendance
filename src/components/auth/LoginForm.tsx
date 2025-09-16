@@ -8,7 +8,7 @@ import { setUser } from "@/store/userSlice";
 import Cookies from "js-cookie";
 import Link from "next/link";
 
-import { getProfile, login } from "@/lib/auth";
+import { login } from "@/lib/auth";
 import { EyeCloseIcon, EyeIcon } from "@/icons";
 
 import Button from "@/components/ui/button/Button";
@@ -28,13 +28,16 @@ export default function LoginPage() {
     setError("");
 
     try {
-      const token = await login(email, password);
+      const res = await login(email, password);
       // const inTenMinutes = new Date(new Date().getTime() + 10 * 60 * 1000);
-      Cookies.set("token", token, { expires: 1 });
+      Cookies.set("token", res.access_token, { expires: 1 });
 
       dispatch(setUser({
         email,
-        token: token
+        id: res.user.id,
+        type: res.user.userType,
+        isActive: res.user.isActive,
+        token: res.access_token,
       }));
 
       router.push("/dashboard");
